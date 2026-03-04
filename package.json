@@ -1,0 +1,61 @@
+{
+  "name": "@mostajs/settings",
+  "version": "1.0.0",
+  "description": "Reusable key-value settings module with typed factory, React provider and auto-generated form",
+  "author": "Dr Hamid MADANI <drmdh@msn.com>",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./components/SettingsProvider": {
+      "types": "./dist/components/SettingsProvider.d.ts",
+      "import": "./dist/components/SettingsProvider.js",
+      "require": "./dist/components/SettingsProvider.js",
+      "default": "./dist/components/SettingsProvider.js"
+    },
+    "./components/SettingsForm": {
+      "types": "./dist/components/SettingsForm.d.ts",
+      "import": "./dist/components/SettingsForm.js",
+      "require": "./dist/components/SettingsForm.js",
+      "default": "./dist/components/SettingsForm.js"
+    },
+    "./hooks/useSettings": {
+      "types": "./dist/hooks/useSettings.d.ts",
+      "import": "./dist/hooks/useSettings.js",
+      "require": "./dist/hooks/useSettings.js",
+      "default": "./dist/hooks/useSettings.js"
+    }
+  },
+  "files": ["dist", "LICENSE", "README.md"],
+  "keywords": ["settings", "configuration", "key-value", "admin", "nextjs", "react", "mosta"],
+  "repository": { "type": "git", "url": "https://github.com/apolocine/mosta-settings" },
+  "homepage": "https://mostajs.dev/packages/settings",
+  "engines": { "node": ">=18.0.0" },
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@mostajs/orm": "^1.0.0"
+  },
+  "peerDependencies": {
+    "next": ">=14",
+    "react": ">=18"
+  },
+  "peerDependenciesMeta": {
+    "next": { "optional": true },
+    "react": { "optional": true }
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "next": "^15.0.0",
+    "react": "^19.0.0",
+    "typescript": "^5.6.0"
+  }
+}
