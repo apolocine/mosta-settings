@@ -27,6 +27,11 @@
       "types": "./dist/hooks/useSettings.d.ts",
       "import": "./dist/hooks/useSettings.js",
       "default": "./dist/hooks/useSettings.js"
+    },
+    "./lib/menu": {
+      "types": "./dist/lib/menu.d.ts",
+      "import": "./dist/lib/menu.js",
+      "default": "./dist/lib/menu.js"
     }
   },
   "files": [
