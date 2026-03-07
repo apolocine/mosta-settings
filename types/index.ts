@@ -4,8 +4,6 @@
 export interface MostaSettingsConfig<T extends Record<string, any> = Record<string, any>> {
   /** Default values — source of truth for types */
   defaults: T
-  /** Collection/table name (default: 'settings') */
-  collection?: string
   /** Optional per-key validators */
   validators?: Partial<Record<keyof T, (value: any) => boolean>>
   /** UI groups for the settings form */

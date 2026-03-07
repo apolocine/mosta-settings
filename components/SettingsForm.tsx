@@ -3,7 +3,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import type { SettingDefinition, SettingGroup } from '../types'
+import type { SettingDefinition, SettingGroup } from '../types/index'
 
 interface SettingsFormProps {
   /** Current settings values */
@@ -111,7 +111,7 @@ export function SettingsForm({
             </label>
             {def.description && <small style={{ color: '#666' }}>{def.description}</small>}
             <select value={val ?? ''} onChange={(e) => onChange(def.key, e.target.value)}>
-              {def.options?.map((opt) => (
+              {def.options?.map((opt: { label: string; value: string }) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}
             </select>

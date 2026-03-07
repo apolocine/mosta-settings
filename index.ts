@@ -18,10 +18,13 @@ export { useSettings } from './hooks/useSettings'
 // API helpers
 export { createSettingsHandlers } from './api/route'
 
+// Menu contribution
+export { settingsMenuContribution } from './lib/menu'
+
 // Types
 export type {
   MostaSettingsConfig,
   SettingGroup,
   SettingDefinition,
   SettingDTO,
-} from './types'
+} from './types/index'

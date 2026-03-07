@@ -3,7 +3,7 @@
 import { BaseRepository } from '@mostajs/orm'
 import { SettingSchema } from '../schemas/setting.schema'
 import type { IDialect } from '@mostajs/orm'
-import type { SettingDTO } from '../types'
+import type { SettingDTO } from '../types/index'
 
 export class SettingRepository extends BaseRepository<SettingDTO> {
   constructor(dialect: IDialect) {

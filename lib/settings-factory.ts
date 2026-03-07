@@ -1,8 +1,12 @@
 // @mosta/settings — Factory for typed settings module
 // Author: Dr Hamid MADANI drmdh@msn.com
-import { getDialect } from '@mostajs/orm'
+import { getDialect, registerSchemas } from '@mostajs/orm'
 import { SettingRepository } from '../repositories/setting.repository'
-import type { MostaSettingsConfig } from '../types'
+import { SettingSchema } from '../schemas/setting.schema'
+import type { MostaSettingsConfig } from '../types/index'
+
+// Auto-register settings schema into ORM registry (idempotent)
+registerSchemas([SettingSchema])
 
 /**
  * Creates a fully typed settings module from your defaults.
