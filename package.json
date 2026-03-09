@@ -1,6 +1,6 @@
 {
   "name": "@mostajs/settings",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Reusable key-value settings module with typed factory, React provider and auto-generated form",
   "author": "Dr Hamid MADANI <drmdh@msn.com>",
   "license": "MIT",
