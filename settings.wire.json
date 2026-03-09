@@ -1,0 +1,20 @@
+{
+  "_doc": "Manifeste de câblage pour @mostajs/settings",
+  "package": "@mostajs/settings",
+  "version": "1.0.2",
+  "type": "functional",
+
+  "schemas": {
+    "from": "@mostajs/settings",
+    "exports": ["SettingSchema"]
+  },
+
+  "repositories": [
+    { "class": "SettingRepository", "type": "SettingDTO", "factory": "settingRepo", "from": "@mostajs/settings" }
+  ],
+
+  "menu": {
+    "name": "settingsMenuContribution",
+    "from": "@mostajs/settings/lib/menu"
+  }
+}
