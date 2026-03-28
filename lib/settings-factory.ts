@@ -1,12 +1,8 @@
 // @mosta/settings — Factory for typed settings module
 // Author: Dr Hamid MADANI drmdh@msn.com
-import { getDialect, registerSchemas } from '@mostajs/orm'
-import { SettingRepository } from '../repositories/setting.repository'
-import { SettingSchema } from '../schemas/setting.schema'
-import type { MostaSettingsConfig } from '../types/index'
 
-// Auto-register settings schema into ORM registry (idempotent)
-registerSchemas([SettingSchema])
+import { getSettingsRepo } from './settings-repo-factory.js'
+import type { MostaSettingsConfig } from '../types/index.js'
 
 /**
  * Creates a fully typed settings module from your defaults.
@@ -18,10 +14,6 @@ registerSchemas([SettingSchema])
 export function createSettingsModule<T extends Record<string, any>>(config: MostaSettingsConfig<T>) {
   type Settings = T
 
-  async function repo(): Promise<SettingRepository> {
-    return new SettingRepository(await getDialect())
-  }
-
   /**
    * Load settings from DB merged over defaults.
    * Always returns a complete object (every key present).
@@ -29,7 +21,7 @@ export function createSettingsModule<T extends Record<string, any>>(config: Most
    */
   async function getSettings(): Promise<Settings> {
     try {
-      const r = await repo()
+      const r = await getSettingsRepo()
       const db = await r.findAllSettings()
       const result = { ...config.defaults } as any
       for (const key of Object.keys(config.defaults)) {
@@ -49,9 +41,9 @@ export function createSettingsModule<T extends Record<string, any>>(config: Most
    * Returns the full settings object after update.
    */
   async function updateSettings(updates: Partial<Settings>): Promise<Settings> {
-    const r = await repo()
+    const r = await getSettingsRepo()
     for (const [key, value] of Object.entries(updates)) {
-      if (!(key in config.defaults)) continue // ignore unknown keys
+      if (!(key in config.defaults)) continue
       const validator = config.validators?.[key as keyof T]
       if (validator && !validator(value)) {
         throw new Error(`Invalid value for setting "${key}"`)
@@ -63,13 +55,13 @@ export function createSettingsModule<T extends Record<string, any>>(config: Most
 
   /** Reset a single setting to its default value */
   async function resetSetting(key: keyof Settings): Promise<void> {
-    const r = await repo()
+    const r = await getSettingsRepo()
     await r.deleteByKey(key as string)
   }
 
   /** Reset ALL settings to defaults */
   async function resetAll(): Promise<void> {
-    const r = await repo()
+    const r = await getSettingsRepo()
     for (const key of Object.keys(config.defaults)) {
       await r.deleteByKey(key)
     }
