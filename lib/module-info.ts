@@ -9,6 +9,7 @@ export function getSchemas() {
 
 export const moduleInfo = {
   name: 'settings',
+  version: '2.1.0',
   label: 'Paramètres',
   description: 'Key-value settings with typed defaults',
   schemas: getSchemas,

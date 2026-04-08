@@ -21,6 +21,10 @@ export { createSettingsHandlers } from './api/route'
 // Menu contribution
 export { settingsMenuContribution } from './lib/menu'
 
+// Scoped settings
+export type { ScopedSettingsConfig } from './lib/scoped-settings'
+export { createScopedKey, parseScopedKey, resolveScopedSettings, updateScopedSetting, deleteScopedSetting } from './lib/scoped-settings'
+
 // Types
 export type {
   MostaSettingsConfig,
