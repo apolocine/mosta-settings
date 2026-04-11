@@ -1,6 +1,6 @@
 {
   "name": "@mostajs/settings",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Reusable key-value settings module with typed factory, React provider and auto-generated form",
   "author": "Dr Hamid MADANI <drmdh@msn.com>",
   "license": "MIT",
@@ -107,5 +107,9 @@
     "next": "^16.1.6",
     "react": "^19.0.0",
     "typescript": "^5.6.0"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/apolocine"
   }
 }
