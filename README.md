@@ -1,95 +1,51 @@
 # @mostajs/settings
 
-> Reusable key-value settings module with typed factory, React provider, and auto-generated form.
+> Typed key-value settings with React provider and auto-generated form.
+> Author: Dr Hamid MADANI drmdh@msn.com
 
-[![npm version](https://img.shields.io/npm/v/@mostajs/settings.svg)](https://www.npmjs.com/package/@mostajs/settings)
-[![license](https://img.shields.io/npm/l/@mostajs/settings.svg)](LICENSE)
-
-Part of the [@mosta suite](https://mostajs.dev).
-
----
-
-## Installation
+## Install
 
 ```bash
 npm install @mostajs/settings @mostajs/orm
 ```
 
-## Quick Start
+## How to Use
 
-### 1. Register schema and create settings module
-
-```typescript
-import { registerSchema } from '@mostajs/orm'
-import { SettingSchema, createSettingsModule } from '@mostajs/settings'
-
-registerSchema(SettingSchema)
-
-const DEFAULTS = {
-  siteName: 'MyApp',
-  maintenanceMode: false,
-  theme: 'system' as 'light' | 'dark' | 'system',
-}
-
-export const { getSettings, updateSettings } = createSettingsModule({ defaults: DEFAULTS })
-```
-
-### 2. Use in API routes
+### 1. Create Settings Module
 
 ```typescript
-const settings = await getSettings()
-console.log(settings.siteName) // fully typed
+import { createSettingsModule } from '@mostajs/settings'
 
-await updateSettings({ maintenanceMode: true })
+const appSettings = createSettingsModule({
+  defaults: { darkMode: false, maxUploadSize: 10, companyName: 'Acme' },
+  validators: { maxUploadSize: (v) => v > 0 && v < 100 },
+})
+
+const settings = await appSettings.getSettings() // { darkMode: false, maxUploadSize: 10, companyName: 'Acme' }
+await appSettings.updateSettings({ darkMode: true })
+await appSettings.resetSetting('darkMode')
 ```
 
-### 3. React provider & hook
+### 2. React Components
 
 ```tsx
-import { SettingsProvider } from '@mostajs/settings/components/SettingsProvider'
-import { useSettings } from '@mostajs/settings/hooks/useSettings'
+import { SettingsProvider, SettingsForm, useSettings } from '@mostajs/settings'
 
-// In layout:
-<SettingsProvider defaults={DEFAULTS}>
-  {children}
+<SettingsProvider defaults={defaults} apiPath="/api/settings">
+  <SettingsForm values={settings} definitions={fields} onSave={save} />
 </SettingsProvider>
-
-// In component:
-const { settings, update } = useSettings()
 ```
 
-### 4. Auto-generated admin form
+### 3. API Handler
 
-```tsx
-import { SettingsForm } from '@mostajs/settings/components/SettingsForm'
-
-<SettingsForm
-  settings={settings}
-  definitions={[
-    { key: 'siteName', type: 'string', label: 'Site Name' },
-    { key: 'maintenanceMode', type: 'boolean', label: 'Maintenance Mode' },
-    { key: 'theme', type: 'select', label: 'Theme', options: ['light', 'dark', 'system'] },
-  ]}
-  onSave={handleSave}
-/>
+```typescript
+import { createSettingsHandlers } from '@mostajs/settings'
+export const { GET, PUT } = createSettingsHandlers(settingsModule, 'admin:settings', checkPermission)
 ```
 
-## API Reference
+### 4. Module Info (for @mostajs/setup)
 
-| Export | Description |
-|--------|-------------|
-| `createSettingsModule(config)` | Factory returning typed `getSettings()` / `updateSettings()` |
-| `SettingRepository` | Repository with `findByKey()`, `upsertByKey()`, `upsertMany()` |
-| `SettingSchema` | Entity schema for registration |
-| `createSettingsHandlers()` | API route factory (GET/PUT) |
-| `SettingsProvider` | React context provider |
-| `SettingsForm` | Auto-generated settings form component |
-| `useSettings()` | React hook for settings context |
-
-## Related Packages
-
-- [@mostajs/orm](https://www.npmjs.com/package/@mostajs/orm) — Multi-dialect ORM (required)
-
-## License
-
-MIT — © 2025 Dr Hamid MADANI <drmdh@msn.com>
+```typescript
+import { getSchemas } from '@mostajs/settings/lib/module-info'
+const schemas = getSchemas() // [SettingSchema]
+```

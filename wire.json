@@ -1,0 +1,12 @@
+{
+  "name": "settings",
+  "package": "@mostajs/settings",
+  "version": "2.0.0",
+  "type": "core",
+  "priority": 5,
+  "dependencies": ["auth"],
+  "displayName": "Settings",
+  "description": "Application settings — key-value store with typed access",
+  "icon": "Settings",
+  "register": "./dist/register.js"
+}
