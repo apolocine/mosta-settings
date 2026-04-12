@@ -3,7 +3,7 @@
   "version": "2.1.1",
   "description": "Reusable key-value settings module with typed factory, React provider and auto-generated form",
   "author": "Dr Hamid MADANI <drmdh@msn.com>",
-  "license": "MIT",
+  "license": "AGPL-3.0-or-later",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
