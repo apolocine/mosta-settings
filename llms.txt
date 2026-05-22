@@ -1,0 +1,89 @@
+# @mostajs/settings — fiche LLM
+> Module de réglages clé-valeur typés : factory typée, provider React et formulaire auto-généré.
+
+- Version: 2.1.2 · Licence: AGPL-3.0-or-later · Auteur: Dr Hamid MADANI <drmdh@msn.com>
+- Chemin: mostajs/mosta-settings · Statut audit: complet (dist/)
+
+## RÔLE
+Stockage de configuration applicative en clé-valeur, typé à partir d'un objet `defaults` (source de vérité des types). Fournit une factory de module typée, un repository ORM, un provider React, un hook et un formulaire d'administration auto-généré. Supporte des réglages « scopés » (global vs par projet). Résout le besoin récurrent de paramètres système éditables sans coder à la main repository, API et UI.
+
+## INSTALLATION
+```bash
+npm install @mostajs/settings @mostajs/orm
+```
+Node >= 18. Peer deps: next (>=14), react (>=18).
+
+## EXPORTS
+- createSettingsModule (factory)
+- SettingRepository (classe), SettingSchema (EntitySchema)
+- SettingsProvider, SettingsForm (composants React)
+- useSettings (hook)
+- createSettingsHandlers (fabrique de handlers API)
+- settingsMenuContribution
+- createScopedKey, parseScopedKey, resolveScopedSettings, updateScopedSetting, deleteScopedSetting
+- types: MostaSettingsConfig, SettingGroup, SettingDefinition, SettingDTO, ScopedSettingsConfig
+
+## EXPORTS PAR SOUS-CHEMIN
+- `@mostajs/settings/components/SettingsProvider` — SettingsProvider
+- `@mostajs/settings/components/SettingsForm` — SettingsForm
+- `@mostajs/settings/hooks/useSettings` — useSettings
+- `@mostajs/settings/lib/menu` — settingsMenuContribution
+- `@mostajs/settings/lib/module-info` — getSchemas(), moduleInfo (bootstrap pour @mostajs/setup)
+- `@mostajs/settings/lib/scoped-settings` — helpers de réglages scopés
+- `@mostajs/settings/register` — fonction register(registry)
+
+## API — SIGNATURES
+- `createSettingsModule<T>(config: MostaSettingsConfig<T>)` → `{ getSettings(): Promise<T>, updateSettings(updates: Partial<T>): Promise<T>, resetSetting(key: keyof T): Promise<void>, resetAll(): Promise<void>, defaults: T, config }`
+- `createSettingsHandlers(settings, permission: string, checkPermission): { GET, PUT }` — handlers Next.js
+- `useSettings<T>(): { settings: T, loading, error, refresh(): Promise<void>, update(updates: Partial<T>): Promise<void> }`
+- `SettingsProvider({ children, defaults, apiPath?='/api/settings', refreshInterval?=0 })`
+- `SettingsForm({ values, definitions: SettingDefinition[], groups?, onSave, onReset?, saving? })`
+- `SettingRepository` extends BaseRepository<SettingDTO> : findByKey, upsertByKey, findAllSettings, deleteByKey, upsertMany
+- `createScopedKey(key, scope): string` · `parseScopedKey(scopedKey): { key, scope }`
+- `resolveScopedSettings<T>(repo, defaults: T, scope: string): Promise<T>` — fusionne defaults → global → scopé
+- `updateScopedSetting(repo, key, value, scope?='global'): Promise<void>`
+- `deleteScopedSetting(repo, key, scope): Promise<boolean>`
+- `getSchemas(): EntitySchema[]` (lib/module-info) — renvoie [SettingSchema]
+
+## TYPES CLÉS
+- `MostaSettingsConfig<T>` { defaults: T, validators?: Partial<Record<keyof T, (v) => boolean>>, groups?: SettingGroup[] }
+- `SettingGroup` { key, label, description?, icon?, settings: string[] }
+- `SettingDefinition` { key, label, description?, type: 'boolean'|'number'|'string'|'select'|'json', options?, min?, max?, step?, placeholder? }
+- `SettingDTO` { id, key, value: unknown, createdAt, updatedAt }
+- `ScopedSettingsConfig<T>` { defaults: T, validators?, groups? }
+- `SettingsContextValue<T>` { settings: T, loading, error, refresh, update }
+
+## PATTERN
+Module de réglages typé + API :
+```ts
+import { createSettingsModule, createSettingsHandlers } from '@mostajs/settings'
+const appSettings = createSettingsModule({
+  defaults: { darkMode: false, maxUploadSize: 10, companyName: 'Acme' },
+  validators: { maxUploadSize: (v) => v > 0 && v < 100 },
+})
+// src/app/api/settings/route.ts
+export const { GET, PUT } = createSettingsHandlers(appSettings, 'admin:settings', checkPermission)
+```
+Côté React :
+```tsx
+import { SettingsProvider, SettingsForm } from '@mostajs/settings'
+<SettingsProvider defaults={defaults} apiPath="/api/settings">
+  <SettingsForm values={settings} definitions={fields} onSave={save} />
+</SettingsProvider>
+```
+
+## DÉPEND DE
+runtime: @mostajs/net (^2.0.0), @mostajs/octoswitcher (^1.0.0), @mostajs/orm (^1.7.0). Peer deps optionnelles: @mostajs/menu, @mostajs/socle, next, react. Le repository étend `BaseRepository` de @mostajs/orm — @mostajs/orm est requis.
+
+## PIÈGES
+- L'objet `defaults` est la source de vérité des types T : toute clé absente des defaults n'est pas typée.
+- `SettingsForm` utilise des inputs HTML bruts — à enrober/remplacer avec votre librairie UI (shadcn, etc.).
+- `SettingsProvider.defaults` doit rester client-safe (pas d'import DB) ; le provider charge ensuite via `apiPath`.
+- `useSettings` doit être appelé sous un `<SettingsProvider>`, sinon il échoue (contexte nul).
+- Réglages scopés : un réglage par projet écrase le réglage global ; ordre de résolution defaults → global → scopé.
+- `createSettingsHandlers` attend un `checkPermission` au format `(permission) => Promise<{ error, session }>` (style @mostajs/auth).
+- Le manifeste `register.ts` est en version 2.0.0 alors que le package est en 2.1.2 — la version du package fait foi.
+
+## RÉFÉRENCES
+- README.md (racine du module)
+- register.ts, settings.wire.json, wire.json (racine du module)

@@ -54,7 +54,8 @@
     "wire.json",
     "settings.wire.json",
     "LICENSE",
-    "README.md"
+    "README.md",
+    "llms.txt"
   ],
   "keywords": [
     "settings",
